@@ -6,7 +6,7 @@ import { GiHamburgerMenu, GiCancel } from "react-icons/gi";
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   return (
-    <>
+    <div className="max-w-7xl mx-auto px-4">
       {/* Menu */}
       <header className="bg-white py-6 border-b-2">
         <div className="max-w-7xl mx-auto px-4 flex justify-between items-center">
@@ -115,7 +115,7 @@ const Header = () => {
           />
         </div>
       </section>
-    </>
+    </div>
   );
 };
 
