@@ -31,12 +31,12 @@ const ClientReview = () => {
                 so painless and relaxed their was no discomfort whatsoever.
               </p>
             </div>
-            <div class="flex justify-center items-center space-x-4">
-              <div class="w-4 h-4 bg-white bg-opacity-20 rounded-full"></div>
+            <div className="flex justify-center items-center space-x-4">
+              <div className="w-4 h-4 bg-white bg-opacity-20 rounded-full"></div>
 
-              <div class="w-4 h-4 bg-white bg-opacity-80 rounded-full"></div>
+              <div className="w-4 h-4 bg-white bg-opacity-80 rounded-full"></div>
 
-              <div class="w-4 h-4 bg-white bg-opacity-20 rounded-full"></div>
+              <div className="w-4 h-4 bg-white bg-opacity-20 rounded-full"></div>
             </div>
           </div>
         </div>
