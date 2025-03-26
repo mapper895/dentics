@@ -1,70 +1,94 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Dentics
+Prueba técnica
 
-## Available Scripts
+## Características
 
-In the project directory, you can run:
+- **Crear citas**: Los usuarios pueden seleccionar un doctor, ingresar su información de contacto y agendar una cita.
+- **Suscripción al newsletter**: Los usuarios pueden suscribirse al newsletter con su correo electrónico.
+- **Autenticación de token**: Utiliza un sistema de **token de acceso** para autenticar las solicitudes a las APIs.
 
-### `npm start`
+## Tecnologías
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- **Frontend**: React.js con **Tailwind CSS** para los estilos.
+- **Estado global**: Context API para manejar el **token** de autenticación.
+- **API**: Axios para las solicitudes HTTP hacia las APIs externas (obtener doctores, crear citas, suscripción al newsletter).
+- **Variables de entorno**: Las claves de autenticación y configuraciones sensibles se manejan a través de **`.env`**.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Instalación
 
-### `npm test`
+1. **Clona el repositorio**:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+   ```bash
+   git clone https://github.com/mapper895/dentics.git
+   ```
 
-### `npm run build`
+2. **Instala las dependencias**:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+   Asegúrate de tener **Node.js** y **npm** instalados en tu máquina. Luego ejecuta:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+   ```bash
+   npm install
+   ```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+3. **Configura las variables de entorno**:
 
-### `npm run eject`
+   Crea un archivo `.env` en la raíz del proyecto y agrega las siguientes variables:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+   ```env
+   REACT_APP_ORD_PROYECTO=your_project_key_here
+   ```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+   Esto es necesario para enviar el **`ordProyecto`** en las solicitudes a las APIs.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+4. **Inicia el servidor de desarrollo**:
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+   ```bash
+   npm start
+   ```
 
-## Learn More
+   La aplicación se ejecutará en [http://localhost:3000](http://localhost:3000).
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Uso
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Crear Cita
 
-### Code Splitting
+1. Dirígete al formulario de **Crear Cita** en la aplicación.
+2. Ingresa tu **nombre**, **teléfono**, **fecha de cita**, **doctor** y un **mensaje**.
+3. Haz clic en **Confirm Appointment** para enviar la solicitud.
+4. La cita será registrada en la API correspondiente si todo está correcto.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### Suscripción al Newsletter
 
-### Analyzing the Bundle Size
+1. Dirígete al formulario de **Newsletter**.
+2. Ingresa tu **nombre** y **correo electrónico**.
+3. Haz clic en **Subscribe Now** para enviar la solicitud.
+4. El correo se registrará en la API de newsletter si todo está correcto.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## Estructura del Proyecto
 
-### Making a Progressive Web App
+```
+src/
+  ├── components/               # Componentes de la aplicación (Formulario de cita, Newsletter, etc.)
+  ├── context/                  # Manejo del estado global (TokenContext)
+  ├── services/                 # Servicios para consumir las APIs (appointmentService, newsletterService)
+  ├── assets/                   # Archivos estáticos (imágenes, íconos)
+  ├── App.js                    # Componente principal de la aplicación
+  ├── index.js                  # Punto de entrada de la aplicación
+  ├── .env                      # Variables de entorno
+  └── package.json               # Dependencias y configuraciones del proyecto
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## Funcionalidades
 
-### Advanced Configuration
+### **`TokenContext.js`**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+Este contexto se encarga de almacenar y proporcionar el **token** a lo largo de toda la aplicación. El token se obtiene desde la API al momento de la autenticación y se utiliza para autorizar solicitudes a los endpoints protegidos.
 
-### Deployment
+### **`appointmentService.js`**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+En este archivo se encuentra la lógica para interactuar con la API que maneja las **citas médicas**. El servicio realiza solicitudes **POST** para crear nuevas citas, enviando los datos del formulario (nombre, teléfono, fecha, doctor, mensaje) y los headers necesarios como el **`ordProyecto`** y **`ordCandidato`**.
 
-### `npm run build` fails to minify
+### **`newsletterService.js`**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Este archivo contiene la lógica para suscribir a los usuarios al **newsletter**. Realiza una solicitud **POST** para registrar un nuevo correo, enviando tanto el **nombre** como el **correo electrónico** del usuario.
