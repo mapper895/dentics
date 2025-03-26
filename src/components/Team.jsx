@@ -1,22 +1,46 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { TokenContext } from "../context/TokenContext";
+import { getDoctors } from "../services/doctorService";
 
 const Team = () => {
-  const [imageUrls, setImageUrls] = useState([]);
+  const { token } = useContext(TokenContext);
+  const [doctors, setDoctors] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
-    // Generate 4 random profile images based on random text
-    const generateImages = () => {
-      const randomImages = [];
-      for (let i = 1; i <= 4; i++) {
-        const randomText = `user${Math.floor(Math.random() * 1000)}`;
-        randomImages.push(`https://robohash.org/${randomText}`);
+    const fetchDoctors = async () => {
+      try {
+        const doctorsData = await getDoctors(token);
+        setDoctors(doctorsData);
+        setLoading(false);
+      } catch (error) {
+        console.log("Error al obtener los doctores:", error);
+        setLoading(false);
       }
-      setImageUrls(randomImages);
     };
+    fetchDoctors();
+  }, [token]);
 
-    generateImages();
-  }, []);
+  const doctorsToShow = doctors.slice(currentIndex, currentIndex + 4); // Mostramos solo 4 doctores
+
+  // Funciones para mover a la derecha o izquierda
+  const moveLeft = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(currentIndex - 4);
+    }
+  };
+
+  const moveRight = () => {
+    if (currentIndex + 4 < doctors.length) {
+      setCurrentIndex(currentIndex + 4);
+    }
+  };
+
+  if (loading) {
+    return <div>Loading...</div>; // Mientras se cargan los doctores
+  }
 
   return (
     <div className="bg-[#F8FAFC] py-20">
@@ -32,88 +56,42 @@ const Team = () => {
           </p>
         </div>
         {/* Team */}
-        <div className="flex flex-col md:flex-row gap-4 justify-between items-center">
+        <div className="flex items-center justify-between">
+          {/* Flecha izquierda */}
           <IoIosArrowBack
             size={30}
-            className="cursor-pointer hidden md:block"
+            className="cursor-pointer"
+            onClick={moveLeft}
+            disabled={currentIndex === 0} // Deshabilita si estamos en el primer grupo
           />
-          <div className="flex flex-col md:flex-row gap-8  md:gap-20">
-            {/* Doctor 1 */}
-            <div className="max-w-[300px] flex flex-col gap-10">
-              <img
-                className="rounded-full object-contain"
-                src={imageUrls[0]}
-                alt="user_1"
-              />
-              <div className="flex flex-col gap-6 items-center text-center">
-                <div className="flex flex-col gap-1">
-                  <h4 className="text-2xl font-bold">Dr. Jeanette Hoff</h4>
-                  <p className="text-base">Orthodontic Treatment </p>
-                  <p className="text-base text-gray-500">Yale Medical School</p>
-                </div>
-                <div className="border border-primary text-primary w-full rounded-xl py-4 text-center hover:bg-blue-100">
-                  Appointment
-                </div>
-              </div>
-            </div>
-            {/* Doctor 2 */}
-            <div className="max-w-[300px] flex flex-col gap-10">
-              <img
-                className="rounded-full object-contain"
-                src={imageUrls[1]}
-                alt="user_1"
-              />
-              <div className="flex flex-col gap-6 items-center text-center">
-                <div className="flex flex-col gap-1">
-                  <h4 className="text-2xl font-bold">Dr. Jeanette Hoff</h4>
-                  <p className="text-base">Orthodontic Treatment </p>
-                  <p className="text-base text-gray-500">Yale Medical School</p>
-                </div>
-                <div className="border border-primary text-primary w-full rounded-xl py-4 text-center hover:bg-blue-100">
-                  Appointment
+
+          {/* Doctores */}
+          <div className="flex gap-4 overflow-hidden w-full">
+            {doctorsToShow.map((doctor, index) => (
+              <div
+                key={index}
+                className="flex-none max-w-xs sm:max-w-sm md:max-w-md lg:max-w-[300px] flex flex-col gap-4"
+              >
+                <img
+                  className="rounded-full object-contain p-10"
+                  src={doctor.photo || "https://via.placeholder.com/150"} // Foto por defecto si no hay imagen
+                  alt={doctor.name}
+                />
+                <div className="text-center">
+                  <h4 className="text-2xl font-bold">{doctor.name}</h4>
+                  <p>{doctor.specialty}</p>
+                  <p className="text-gray-500">{doctor.university}</p>
                 </div>
               </div>
-            </div>
-            {/* Doctor 3 */}
-            <div className="max-w-[300px] flex flex-col gap-10">
-              <img
-                className="rounded-full object-contain"
-                src={imageUrls[2]}
-                alt="user_1"
-              />
-              <div className="flex flex-col gap-6 items-center text-center">
-                <div className="flex flex-col gap-1">
-                  <h4 className="text-2xl font-bold">Dr. Jeanette Hoff</h4>
-                  <p className="text-base">Orthodontic Treatment </p>
-                  <p className="text-base text-gray-500">Yale Medical School</p>
-                </div>
-                <div className="border border-primary text-primary w-full rounded-xl py-4 text-center hover:bg-blue-100">
-                  Appointment
-                </div>
-              </div>
-            </div>
-            {/* Doctor 4 */}
-            <div className="max-w-[300px] flex flex-col gap-10">
-              <img
-                className="rounded-full object-contain"
-                src={imageUrls[3]}
-                alt="user_1"
-              />
-              <div className="flex flex-col gap-6 items-center text-center">
-                <div className="flex flex-col gap-1">
-                  <h4 className="text-2xl font-bold">Dr. Jeanette Hoff</h4>
-                  <p className="text-base">Orthodontic Treatment </p>
-                  <p className="text-base text-gray-500">Yale Medical School</p>
-                </div>
-                <div className="border border-primary text-primary w-full rounded-xl py-4 text-center hover:bg-blue-100">
-                  Appointment
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
+
+          {/* Flecha derecha */}
           <IoIosArrowForward
             size={30}
-            className="cursor-pointer hidden md:block"
+            className="cursor-pointer"
+            onClick={moveRight}
+            disabled={currentIndex + 4 >= doctors.length} // Deshabilita si estamos en el último grupo
           />
         </div>
       </div>

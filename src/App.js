@@ -8,10 +8,11 @@ import ClientReview from "./components/ClientReview";
 import Appointment from "./components/Appointment";
 import Newsletter from "./components/Newsletter";
 import Footer from "./components/Footer";
+import { TokenProvider } from "./context/TokenContext";
 
 const App = () => {
   return (
-    <>
+    <TokenProvider>
       <Header />
       <Services />
       <Features />
@@ -21,7 +22,7 @@ const App = () => {
       <Appointment />
       <Newsletter />
       <Footer />
-    </>
+    </TokenProvider>
   );
 };
 
