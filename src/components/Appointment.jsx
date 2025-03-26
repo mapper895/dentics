@@ -1,15 +1,66 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { TokenContext } from "../context/TokenContext";
+import { createAppointment } from "../services/appointmentService";
+import { getDoctors } from "../services/doctorService";
 import appointment from "../assets/appointment.png";
 
 const Appointment = () => {
+  const { token } = useContext(TokenContext);
+  const [doctors, setDoctors] = useState([]);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [date, setDate] = useState("");
   const [doctor, setDoctor] = useState("Dr. Pritis Barua");
   const [message, setMessage] = useState("");
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const handleSubmit = (e) => {};
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        const doctorsData = await getDoctors(token);
+        setDoctors(doctorsData);
+        setDoctor(doctorsData[0]?.name || "");
+      } catch (error) {
+        console.error("Error al obtener los doctores:", error);
+      }
+    };
+
+    fetchDoctors();
+  }, [token]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    // Validar que todos los campos estén completos
+    if (!name || !phone || !date || !doctor || !message) {
+      setError("Todos los campos son obligatorios.");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await createAppointment(
+        name,
+        phone,
+        date,
+        doctor,
+        message,
+        token
+      );
+
+      console.log("Cita creada:", response);
+      alert("Cita creada exitosamente.");
+    } catch (error) {
+      console.error("Error al crear la cita:", error);
+      setError("Hubo un problema al crear la cita.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 flex flex-col gap-14 py-20">
@@ -58,7 +109,7 @@ const Appointment = () => {
                 Phone
               </label>
               <input
-                type="tel"
+                type="text"
                 id="phone"
                 placeholder="+01 (555) 000-0000"
                 value={phone}
@@ -99,9 +150,15 @@ const Appointment = () => {
                 onChange={(e) => setDoctor(e.target.value)}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option>Dr. Pritis Barua</option>
-                <option>Dr. John Doe</option>
-                <option>Dr. Jane Smith</option>
+                {doctors.length === 0 ? (
+                  <option>Loading doctors...</option>
+                ) : (
+                  doctors.map((doc, index) => (
+                    <option key={index} value={doc.name}>
+                      {doc.name}
+                    </option>
+                  ))
+                )}
               </select>
             </div>
           </div>
